@@ -20,6 +20,14 @@ public class Queue {
         this.currentTime = 0;
     }
 
+    public int getCurrentTime() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(int currentTime) {
+        this.currentTime = currentTime;
+    }
+
     public boolean ended(){
         boolean ended = true;
         for (Process process : processes) {

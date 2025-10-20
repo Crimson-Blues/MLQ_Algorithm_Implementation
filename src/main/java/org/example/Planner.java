@@ -9,6 +9,8 @@ public class Planner {
     List<Queue> queues = new ArrayList<Queue>();;
     List<List<ProcessingRecord>> queueRecords = new ArrayList<>();
     List<Process> processes;
+    List<Process> arrivedProcesses = new ArrayList<>();
+    int currentTime = 0;
 
     public Planner(){
     }
@@ -21,8 +23,6 @@ public class Planner {
         }
         System.out.println(processes.size());
         for (Process process : processes){
-            //System.out.println(process);
-            //System.out.println(process==null);
             int queue = process.getQueue()-1;
             queues.get(queue).addProcess(process);
         }
@@ -54,11 +54,37 @@ public class Planner {
         process.setTurnAroundTime();
     }
 
+    public boolean ended(){
+        boolean ended = true;
+        for (Process process : processes) {
+            if (process.getRemainingBurstTime() != 0) {
+                ended = false;
+                break;
+            }
+        }
+        return ended;
+    }
+
+    public void checkArrivals(){
+        for (Process process : processes) {
+            if(process.getArrivalTime() <= currentTime && !arrivedProcesses.contains(process)){
+                arrivedProcesses.add(process);
+                int queue = process.getQueue()-1;
+                queues.get(queue).addProcess(process);
+            }
+        }
+    }
+
     public List<Process> RunPlanner(){
-        //Runs every queue and saves the returning record in queueRecords
-        for (int i = 0; i < queues.size(); i++){
-            Queue queue = queues.get(i);
-            queueRecords.add(queue.runQueue());
+        while(!ended()){
+            checkArrivals();
+            //Attempts to run all queues in order of priority
+            for (int i = 0; i < queues.size(); i++){
+                Queue queue = queues.get(i);
+                queue.setCurrentTime(currentTime);
+                queueRecords.add(queue.runQueue());
+                currentTime = queue.getCurrentTime();
+            }
         }
 
         //Calculates metrics for each process
