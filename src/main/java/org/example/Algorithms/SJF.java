@@ -44,7 +44,6 @@ public class SJF implements IPlanningAlgorithm {
         if (processes.isEmpty()){
             return null;
         }
-
         Process shortestJob = processes.get(0);
         int shortestJobDuration = shortestJob.getRemainingBurstTime();
 
@@ -54,6 +53,7 @@ public class SJF implements IPlanningAlgorithm {
                 shortestJobDuration = process.getRemainingBurstTime();
             }
         }
+        removeProcess(shortestJob);
         return new ProcessingTime(shortestJob, shortestJobDuration);
     }
 }

@@ -86,6 +86,7 @@ public class Planner {
             if(process.getArrivalTime() <= currentTime && !arrivedProcesses.contains(process)){
                 arrivedProcesses.add(process);
                 int queue = process.getQueue()-1;
+                System.out.println("Inserting process into queue: " + queue);
                 queues.get(queue).addProcess(process);
             }
         }
@@ -96,13 +97,15 @@ public class Planner {
     // When all queues finish, metrics are calculated for each process.
     public List<Process> RunPlanner(){
         while(!ended()){
-            checkArrivals();
             //Attempts to run all queues in order of priority
             for (int i = 0; i < queues.size(); i++){
+                checkArrivals();
+                System.out.println("Running queue: " + i);
                 Queue queue = queues.get(i);
                 queue.setCurrentTime(currentTime);
                 queueRecords.add(queue.runQueue());
-                currentTime = queue.getCurrentTime();
+                this.currentTime = queue.getCurrentTime();
+                System.out.println("Current time: " + currentTime);
             }
         }
 

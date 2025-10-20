@@ -40,6 +40,9 @@ public class Queue {
 
     // Checks whether all processes in the queue have finished executing
     public boolean ended(){
+        if(processes.isEmpty()){
+            return true;
+        }
         boolean ended = true;
         for (Process process : processes) {
             if (process.getRemainingBurstTime() != 0) {
@@ -60,7 +63,7 @@ public class Queue {
         ProcessingTime nextStepTime = this.algorithm.nextProcessingTime();
         Process currentProcess = nextStepTime.getProcess();
         int duration = nextStepTime.getDuration();
-
+        System.out.println("Duration of " + currentProcess.getId() + " is " + duration);
         // Deduct the executed time from the process’s remaining burst time
         int remainingBurstTime = currentProcess.getRemainingBurstTime();
         currentProcess.setRemainingBurstTime(remainingBurstTime - duration);
@@ -75,11 +78,13 @@ public class Queue {
         while(!ended()){
             checkArrivals();
             ProcessingTime nextStep = nextStep();
+            if(nextStep == null){
+                break;
+            }
             Process runningProcess = nextStep.getProcess();
             int duration = nextStep.getDuration();
             records.add(new ProcessingRecord(runningProcess, currentTime,
                     currentTime + duration));
-
             this.currentTime += duration;
         }
         return records;
