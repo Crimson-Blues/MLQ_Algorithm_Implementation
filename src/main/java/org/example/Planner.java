@@ -11,7 +11,7 @@ import java.util.List;
 public class Planner {
     // --- Core components ---
     List<Queue> queues = new ArrayList<>();                     // All queues managed by the MLQ (each with its own algorithm)
-    List<List<ProcessingRecord>> queueRecords = new ArrayList<>(); // Execution logs for each queue
+    List<ProcessingRecord> queueRecords = new ArrayList<>(); // Execution logs for each queue
     List<Process> processes;                                    // All processes to be scheduled
     List<Process> arrivedProcesses = new ArrayList<>();         // Processes that have already arrived in the system
     int currentTime = 0;                                        // Global simulation clock
@@ -44,23 +44,26 @@ public class Planner {
     // for a given process based on its recorded execution in the queue.
     public void CalculateTimes(Process process){
         int queue = process.getQueue()-1;
-        List<ProcessingRecord> queueRecord = queueRecords.get(queue);
         int waitTime = 0;
         List<Process> processOrder = new ArrayList<>();
-        for (ProcessingRecord record : queueRecord){
+        for (ProcessingRecord record : queueRecords){
             processOrder.add(record.getProcess());
         }
 
-        int responseTime = queueRecord.get(processOrder.indexOf(process)).getBeginningTime();
-        int completionTime = queueRecord.get(processOrder.lastIndexOf(process)).getEndTime();
+        int responseTime = queueRecords.get(processOrder.indexOf(process)).getBeginningTime();
+        int completionTime = queueRecords.get(processOrder.lastIndexOf(process)).getEndTime();
 
+        int arrival = process.getArrivalTime();
         int lastApparition = processOrder.lastIndexOf(process);
         for (int i = 0; i < lastApparition; i++){
-            ProcessingRecord record = queueRecord.get(i);
+            ProcessingRecord record = queueRecords.get(i);
             if(record.getProcess()!=process){
-                waitTime += queueRecord.get(i).getDuration();
+                System.out.println("Process:" + record.getProcess().getId());
+                System.out.println("Adding time to wait time" + queueRecords.get(i).getDuration());
+                waitTime += queueRecords.get(i).getDuration();
             }
         }
+        waitTime-=arrival;
 
         process.setResponseTime(responseTime);
         process.setCompletionTime(completionTime);
@@ -105,6 +108,7 @@ public class Planner {
                 Queue queue = queues.get(i);
                 queue.setCurrentTime(currentTime);
                 queueRecordRound  = queue.runQueue();
+                queueRecords.addAll(queueRecordRound);
                 this.currentTime = queue.getCurrentTime();
                 //System.out.println("Current time: " + currentTime);
             }
