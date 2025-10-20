@@ -86,7 +86,7 @@ public class Planner {
             if(process.getArrivalTime() <= currentTime && !arrivedProcesses.contains(process)){
                 arrivedProcesses.add(process);
                 int queue = process.getQueue()-1;
-                System.out.println("Inserting process into queue: " + queue);
+                //System.out.println("Inserting process into queue: " + queue);
                 queues.get(queue).addProcess(process);
             }
         }
@@ -98,14 +98,19 @@ public class Planner {
     public List<Process> RunPlanner(){
         while(!ended()){
             //Attempts to run all queues in order of priority
+            List<ProcessingRecord> queueRecordRound = new ArrayList<>();
             for (int i = 0; i < queues.size(); i++){
                 checkArrivals();
                 System.out.println("Running queue: " + i);
                 Queue queue = queues.get(i);
                 queue.setCurrentTime(currentTime);
-                queueRecords.add(queue.runQueue());
+                queueRecordRound  = queue.runQueue();
                 this.currentTime = queue.getCurrentTime();
-                System.out.println("Current time: " + currentTime);
+                //System.out.println("Current time: " + currentTime);
+            }
+            //Advances time in case no process have arrived but there are processes left
+            if(queueRecordRound.isEmpty()){
+                currentTime++;
             }
         }
 
