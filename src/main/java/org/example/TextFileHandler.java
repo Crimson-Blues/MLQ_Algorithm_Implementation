@@ -4,9 +4,16 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Handles reading and writing of text files used by the MLQ scheduler.
+// Responsible for parsing process data from input files and writing simulation results to output files.
 public class TextFileHandler {
+    // --- Constructors ---
+
     public TextFileHandler() {}
 
+    // --- File I/O Utilities ---
+    // Reads all lines from a text file and returns them as a list of strings.
+    // Removes any leading or trailing whitespace on each line.
     public List<String> readTextFile(String fileName) {
         List<String> text = new ArrayList<String>();
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -20,6 +27,8 @@ public class TextFileHandler {
         return text;
     }
 
+    // Writes a list of strings to a text file, overwriting it if it already exists.
+    // Each element in the list is written on a new line.
     public void writeTextFile(String fileName, List<String> text) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
             for (int i = 0; i < text.size(); i++) {
@@ -31,6 +40,12 @@ public class TextFileHandler {
         }
     }
 
+    // --- Process Parsing ---
+
+    // Reads a list of processes from a file.
+    // Each valid line should be formatted as:
+    // id; burstTime; arrivalTime; queue; priority
+    // Lines starting with '#' are treated as comments and ignored.
     public List<Process> readProcesses(String fileName) {
         List<String> lines = readTextFile(fileName);
         List<Process> processes = new ArrayList<Process>();
@@ -54,6 +69,10 @@ public class TextFileHandler {
         return processes;
     }
 
+    // --- Output Formatting ---
+
+    // Writes the simulation output to a text file.
+    // Includes process metrics (WT, CT, RT, TAT) and average values at the end.
     public void writeOutputFile(String fileName, List<Process> processes, List<Double> averageMetrics) {
         List<String> lines = new ArrayList<String>();
         lines.add("# Archivo: " + fileName);
@@ -72,7 +91,9 @@ public class TextFileHandler {
         writeTextFile("data/output/"+ fileName, lines);
     }
 
-    //Extracts and formats process info
+    // --- Internal helpers ---
+
+    // Builds a semicolon-separated line from a Process object for output.
     private static String getLine(List<Process> processes, int i) {
         Process process = processes.get(i);
         String line = "";

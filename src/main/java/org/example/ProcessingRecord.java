@@ -1,9 +1,16 @@
 package org.example;
 
+// Represents a single execution record for a process in the MLQ timeline.
+// Stores when the process started and finished during a specific CPU burst.
 public class ProcessingRecord {
+    // The process associated with this record
     private Process process;
+    // Time (in system units) when the process started executing
     private int beginningTime;
+    // Time (in system units) when the process stopped executing
     private int endTime;
+
+    // --- Constructors ---
 
     public ProcessingRecord(Process process) {
         this.process = process;
@@ -15,6 +22,8 @@ public class ProcessingRecord {
         this.beginningTime = beginningTime;
         this.endTime = endTime;
     }
+
+    // --- Getters and setters ---
 
     public Process getProcess() {
         return process;

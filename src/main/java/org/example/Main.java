@@ -10,7 +10,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         TextFileHandler textFileHandler = new TextFileHandler();
-        List<Process> processList = textFileHandler.readProcesses("data/input/mlq001.txt");
+        List<Process> processList = textFileHandler.readProcesses("data/input/mlq003.txt");
         List<IPlanningAlgorithm> algorithms = new ArrayList<>();
         algorithms.add(new RoundRobin(1));
         algorithms.add(new RoundRobin(3));
@@ -22,6 +22,6 @@ public class Main {
         List<Process> obtainedProcesses = planner.RunPlanner();
         List<Double> averageMetrics = planner.CalculateAverageMetrics();
 
-        textFileHandler.writeOutputFile("mlq001.txt",obtainedProcesses,averageMetrics);
+        textFileHandler.writeOutputFile("mlq003.txt",obtainedProcesses,averageMetrics);
     }
 }
