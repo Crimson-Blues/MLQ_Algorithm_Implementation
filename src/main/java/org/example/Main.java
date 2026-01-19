@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        String filename = "mlq007.txt";
+        String filename = "mlq006.txt";
         TextFileHandler textFileHandler = new TextFileHandler();
         List<Process> processList = textFileHandler.readProcesses("data/input/"+filename);
         List<IPlanningAlgorithm> algorithms = new ArrayList<>();
